@@ -17,7 +17,7 @@ type Mood = {
 };
 
 const MOODS: Mood[] = [
-  { id: "happy", label: "Happy", emoji: "😄", rainEmoji: "☀️", rainCount: 14, rainSpeed: 7,
+  { id: "happy", label: "Happy", emoji: "😄", rainEmoji: "🌞", rainCount: 14, rainSpeed: 7,
     bg: "linear-gradient(135deg,#ffd166 0%,#ff8c42 50%,#ffb627 100%)", accent: "#fff7d6",
     caption: "Sunshine on the brain." },
   { id: "sad", label: "Sad", emoji: "😢", rainEmoji: "💧", rainCount: 40, rainSpeed: 1.4,
@@ -50,12 +50,15 @@ export default function VibePage() {
             const delay = (i * 0.37) % mood.rainSpeed;
             const size = 18 + ((i * 13) % 28);
             const drift = (i % 2 === 0 ? 1 : -1) * (4 + (i % 6));
+            const stationary = mood.id === "happy" || mood.id === "energetic";
+            const top = stationary ? `${(i * 23) % 80 + 5}%` : undefined;
             const dropStyle: CSSProperties & Record<string, string | number> = {
               left: `${left}%`,
               fontSize: `${size}px`,
               animationDuration: `${mood.rainSpeed}s`,
               animationDelay: `-${delay}s`,
               "--drift": `${drift}px`,
+              ...(top ? { top } : null),
             };
             return (
               <span key={i} className={`drop drop-${mood.id}`} style={dropStyle}>
@@ -100,17 +103,17 @@ export default function VibePage() {
         html, body { margin: 0; padding: 0; min-height: 100%; background: #0f1115; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
         .drop { position: absolute; top: -10vh; opacity: 0.95; will-change: transform; pointer-events: none;
                 animation-name: fall; animation-iteration-count: infinite; animation-timing-function: linear; }
-        .drop-energetic { animation-name: flash; opacity: 0; filter: drop-shadow(0 0 12px #fff); }
+        .drop-energetic { animation-name: flash; animation-timing-function: ease-in-out; opacity: 0; filter: drop-shadow(0 0 16px #fff7a8); }
         .drop-anxious   { animation-name: swirl; }
         .drop-chill     { animation-name: drift; }
         .drop-sleepy    { animation-name: float; }
-        .drop-happy     { animation-name: pulse; top: auto; bottom: -10vh; }
+        .drop-happy     { animation-name: pulse; animation-timing-function: ease-in-out; filter: drop-shadow(0 0 6px rgba(255,210,90,0.45)); }
         @keyframes fall   { 0%{transform:translate3d(0,-10vh,0)} 100%{transform:translate3d(var(--drift),110vh,0)} }
         @keyframes drift  { 0%{transform:translate3d(0,-10vh,0) rotate(0)} 100%{transform:translate3d(calc(var(--drift)*4),110vh,0) rotate(360deg)} }
         @keyframes swirl  { 0%{transform:translate3d(0,-10vh,0) rotate(0)} 50%{transform:translate3d(calc(var(--drift)*6),50vh,0) rotate(180deg)} 100%{transform:translate3d(0,110vh,0) rotate(360deg)} }
         @keyframes float  { 0%{transform:translate3d(0,110vh,0); opacity:0} 30%{opacity:.9} 100%{transform:translate3d(var(--drift),-10vh,0); opacity:0} }
-        @keyframes pulse  { 0%,100%{transform:translate3d(0,0,0) scale(1); opacity:.9} 50%{transform:translate3d(var(--drift),-30px,0) scale(1.25); opacity:1} }
-        @keyframes flash  { 0%,92%,100%{opacity:0; transform:translate3d(0,0,0) scaleY(1)} 94%{opacity:1; transform:translate3d(0,0,0) scaleY(1.4)} 96%{opacity:.6} }
+        @keyframes pulse  { 0%,100%{transform:translate3d(0,0,0) scale(1); opacity:.95} 50%{transform:translate3d(var(--drift),-10px,0) scale(1.18); opacity:1} }
+        @keyframes flash  { 0%,82%,100%{opacity:0; transform:scale(1)} 86%{opacity:1; transform:scale(1.6)} 90%{opacity:.7; transform:scale(1.2)} 94%{opacity:1; transform:scale(1.4)} 97%{opacity:.3} }
         @keyframes shimmer{ 0%{transform:translateX(-30%)} 100%{transform:translateX(30%)} }
         @keyframes pop    { 0%{opacity:0; transform:translateY(8px)} 100%{opacity:1; transform:translateY(0)} }
       `}</style>
