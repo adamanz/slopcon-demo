@@ -126,7 +126,7 @@ export default function PomodoroPage() {
             fill="none"
             stroke={accent}
             strokeWidth={stroke}
-            strokeLinecap="round"
+            strokeLinecap={progress > 0.01 ? "round" : "butt"}
             strokeDasharray={circ}
             strokeDashoffset={circ * (1 - progress)}
             style={{ transition: "stroke-dashoffset 0.9s linear, stroke 0.3s ease" }}
