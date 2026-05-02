@@ -56,7 +56,7 @@ export default function SlotsPage() {
           if (next[i].spinning) next[i] = { ...next[i], value: pick() };
           return next;
         });
-      }, 75);
+      }, 110);
       intervalsRef.current.push(id);
       setTimeout(() => {
         clearInterval(id);
@@ -84,8 +84,17 @@ export default function SlotsPage() {
       </p>
       <div style={{ display: "flex", gap: "1rem", padding: "1.25rem", background: "linear-gradient(180deg,#fde68a,#f59e0b)", borderRadius: 24, boxShadow: "0 12px 40px rgba(0,0,0,0.35), inset 0 0 0 6px #b45309" }}>
         {reels.map((reel, i) => (
-          <div key={i} style={{ width: 110, height: 130, background: "#fff", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 72, boxShadow: "inset 0 0 0 4px #1f2937, 0 4px 0 #1f2937", animation: reel.spinning ? "shake 0.15s infinite alternate" : "none", userSelect: "none" }}>
-            <span style={{ display: "inline-block", filter: win ? "drop-shadow(0 0 12px gold)" : "none" }}>{reel.value}</span>
+          <div key={i} style={{ width: 110, height: 130, background: "#fff", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 72, overflow: "hidden", boxShadow: "inset 0 0 0 4px #1f2937, 0 4px 0 #1f2937", userSelect: "none" }}>
+            <span
+              key={reel.spinning ? `s-${reel.value}-${i}` : `f-${reel.value}-${i}`}
+              style={{
+                display: "inline-block",
+                animation: reel.spinning ? "reelspin 110ms linear" : win ? "bounce 0.5s ease" : "none",
+                filter: win ? "drop-shadow(0 0 12px gold)" : "none",
+              }}
+            >
+              {reel.value}
+            </span>
           </div>
         ))}
       </div>
@@ -107,7 +116,8 @@ export default function SlotsPage() {
         </span>
       ))}
       <style>{`
-        @keyframes shake { from { transform: translateY(-4px); } to { transform: translateY(4px); } }
+        @keyframes reelspin { 0% { transform: translateY(-110px); opacity: 0.2; } 50% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes bounce { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
         @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; } }
       `}</style>
